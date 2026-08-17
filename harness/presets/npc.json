@@ -1,0 +1,71 @@
+{
+  "name": "<creature name> (NPC)",
+  "_role": "Viewed at mid distance; balanced.",
+  "claims": [
+    {
+      "type": "part_exists",
+      "part": "<signature part>",
+      "stage": "MID",
+      "label": "signature part must exist"
+    },
+    {
+      "type": "part_signature",
+      "part": "<signature part>",
+      "view": "side",
+      "min_share": 0.12,
+      "or_min_span": 0.12,
+      "stage": "MID",
+      "label": "signature presence"
+    },
+    {
+      "type": "focal_contrast",
+      "a": "<primary focal>",
+      "b": "<secondary focal>",
+      "min_ratio": 2,
+      "stage": "MID",
+      "label": "focal points must not be equal weight"
+    },
+    {
+      "type": "share_hierarchy",
+      "primary": [
+        "<primary mass…>"
+      ],
+      "secondary": [
+        "<secondary mass…>"
+      ],
+      "tertiary": [
+        "<detail part…>"
+      ],
+      "stage": "MID",
+      "label": "631 hierarchy"
+    },
+    {
+      "type": "rig_skinned",
+      "stage": "HIGH"
+    },
+    {
+      "type": "anim_named",
+      "names": [
+        "idle",
+        "move",
+        "attack"
+      ],
+      "stage": "HIGH"
+    },
+    {
+      "type": "saturation_area",
+      "view": "tq",
+      "min": 0.1,
+      "max": 0.34,
+      "stage": "HIGH",
+      "label": "high-saturation area must sit in the 10%-34% band: amount of colour, not where it goes"
+    },
+    {
+      "type": "tri_budget",
+      "min": 1500,
+      "max": 5000,
+      "stage": "LOW",
+      "label": "triangle budget band"
+    }
+  ]
+}

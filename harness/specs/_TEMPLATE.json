@@ -1,0 +1,56 @@
+{
+  "name": "<creature name (one-line identity)>",
+  "_how_to_write": "Translate this creature's design claims into measurable claims. Each may carry a label (plain-language description; failure messages quote it). Parts are identified by MATERIAL NAME — the material name IS the part name, naming must match the spec JSON palette (material name = part name).",
+  "_claim_types": {
+    "part_exists": "{part} a material/part with this name must exist",
+    "part_visible": "{part, view?, min_share} minimum share of body pixels the part holds in a given view (view: front/side/tq/reartq/top, default side)",
+    "part_signature": "{part, view?, min_share, or_min_span} signature part: frame share OR span ratio must clear its bar",
+    "style_dark": "{view?, max_median_lum} dark styling: cap on body median luminance (0-255)",
+    "style_light": "{view?, min_median_lum} light styling: the floor",
+    "saturation_area": "{view?, min?, max?} share of the view carrying a highly saturated colour (HSV S ≥ 0.50 on the UNLIT baked colour, default view tq, default band 0.10-0.34): under the floor the creature reads as a grey mass, over the ceiling saturation stops working as a spotlight. Says HOW MUCH, never WHERE",
+    "rig_skinned": "{} must be skinned",
+    "anim_named": "{names:[...]} these named animations must be present",
+    "tri_budget": "{min, max} triangle budget band",
+    "share_hierarchy": "{primary:[..],secondary:[..],tertiary:[..],tolerance?} primary/secondary/tertiary frame shares ≈6:3:1",
+    "focal_contrast": "{a, b, min_ratio?} the two focal parts' shares must differ by ≥N× (default 2); equal-weight competition is forbidden"
+  },
+  "claims": [
+    {
+      "type": "part_exists",
+      "part": "<signature part material name>",
+      "label": "signature part must exist"
+    },
+    {
+      "type": "part_signature",
+      "part": "<signature part material name>",
+      "view": "side",
+      "min_share": 0.12,
+      "or_min_span": 0.12,
+      "label": "the signature must be exaggerated: share or span must clear its bar"
+    },
+    {
+      "type": "rig_skinned"
+    },
+    {
+      "type": "anim_named",
+      "names": [
+        "<anim1>",
+        "<anim2>"
+      ]
+    },
+    {
+      "type": "saturation_area",
+      "view": "tq",
+      "min": 0.1,
+      "max": 0.34,
+      "stage": "HIGH",
+      "label": "high-saturation area must sit in the 10%-34% band: amount of colour, not where it goes"
+    },
+    {
+      "type": "tri_budget",
+      "min": 1200,
+      "max": 9000
+    }
+  ],
+  "_stage": "Each claim may declare a stage: LOW/MID/HIGH. judge --stage LOW checks only that stage (plus unstaged claims); with no --stage, everything is checked."
+}

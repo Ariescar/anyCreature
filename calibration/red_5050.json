@@ -1,0 +1,20 @@
+{
+ "name": "red_5050",
+ "_purpose": "calibration sample that violates ONLY the 50:50 proportion rule (segments 0.50 vs 0.48, ratio 0.96). Everything else is clean. The build MUST fail with reason 'proportion'.",
+ "palette": { "skin": { "color": "#a08060", "rough": 0.9 } },
+ "joints": {
+  "A": [0, 0.5, -0.5],
+  "B": [0, 0.5, 0.0],
+  "C": [0, 0.5, 0.48]
+ },
+ "chains": { "axis": ["A", "B", "C"] },
+ "volumes": [
+  {
+   "chain": "axis",
+   "material": "skin",
+   "sides": 12,
+   "profile": [[0, 0.14, 0.14], [0.5, 0.15, 0.15], [1, 0.1, 0.1]],
+   "caps": ["dome", "dome"]
+  }
+ ]
+}

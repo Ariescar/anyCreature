@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ · 3D Showroom</title>
+<!-- Offline showroom: three.js is inlined and the model is embedded as base64.
+     No CDN, no webfont, no server — double-click the file and it runs. -->
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    color:#1b1b1d;
+    font-family:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Songti TC","Noto Serif CJK TC",serif;
+    overflow:hidden;
+    background:radial-gradient(75% 55% at 50% 30%, #6e6e73 0%, #4c4c51 55%, #3a3a3f 100%);
+  }
+  .room{position:relative;height:100vh;display:grid;grid-template-rows:1fr auto}
+  #stage{display:block;width:100%;height:100%}
+  #stage canvas{display:block;width:100%;height:100%}
+  .floor{
+    position:fixed;left:0;right:0;bottom:0;height:60vh;z-index:1;pointer-events:none;
+    background:linear-gradient(180deg, rgba(150,150,156,0) 0%, rgba(158,158,164,.28) 26%,
+      rgba(184,184,190,.62) 52%, rgba(200,200,205,.86) 78%, rgba(188,188,194,.9) 100%);
+  }
+  .vignette{
+    position:fixed;inset:0;z-index:2;pointer-events:none;
+    background:radial-gradient(115% 88% at 50% 34%, rgba(0,0,0,0) 40%, rgba(20,20,24,.5) 100%);
+  }
+  .plate{position:relative;z-index:3;display:flex;justify-content:center;padding:0 32px 16vh}
+  .card{
+    text-align:center;padding:16px 40px 14px;
+    background:rgba(233,231,226,.82);
+    border:1px solid rgba(27,27,29,.4);border-radius:2px;
+    box-shadow:0 12px 28px rgba(15,15,18,.28);backdrop-filter:blur(2px);
+  }
+  .name{
+    margin:0;font-weight:500;font-size:clamp(24px,2.9vw,36px);
+    font-variant:small-caps;letter-spacing:.24em;text-indent:.24em;white-space:nowrap;color:#17171a;
+  }
+  .version{
+    margin:8px 0 0;padding-top:9px;border-top:1px solid rgba(27,27,29,.22);
+    font-size:12.5px;letter-spacing:.14em;color:rgba(27,27,29,.62);
+  }
+  .tools{position:fixed;right:22px;bottom:22px;z-index:4;display:flex;flex-direction:column;gap:10px}
+  .tools button{
+    width:42px;height:42px;display:grid;place-items:center;
+    background:rgba(233,231,226,.8);border:1px solid rgba(27,27,29,.38);
+    border-radius:2px;color:#17171a;cursor:pointer;
+    box-shadow:0 6px 16px rgba(15,15,18,.22);transition:background .15s,color .15s;
+  }
+  .tools button:hover{background:#f2f1ed}
+  .tools button[aria-pressed="true"]{background:#17171a;color:#eceae5;border-color:#17171a}
+  .tools button svg{width:20px;height:20px;display:block}
+  .tag{
+    position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;
+    padding:9px 20px;background:rgba(23,23,26,.86);color:#f0eee9;
+    border:1px solid rgba(240,238,233,.35);border-radius:2px;
+    font-size:13px;letter-spacing:.3em;text-indent:.3em;text-transform:uppercase;
+    white-space:nowrap;opacity:0;transition:opacity .18s;pointer-events:none;
+  }
+  .tag[data-on="1"]{opacity:1}
+  .hint{position:fixed;left:22px;bottom:22px;z-index:4;font-size:11.5px;letter-spacing:.08em;
+    color:rgba(240,238,233,.5);pointer-events:none}
+</style>
+</head>
+<body>
+  <div class="floor"></div>
+  <div class="vignette"></div>
+  <div class="room">
+    <div style="position:relative"><div id="stage"></div></div>
+    <div class="plate">
+      <div class="card">
+        <h1 class="name">__TITLE__</h1>
+        <p class="version">__BYLINE__</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tools">
+    <button id="btn-anim" type="button" title="Animation">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 19V9.5"></path>
+        <path d="M4 12.5c3-4.5 6-4.5 9 0s6 4.5 8-0.5"></path>
+        <circle cx="4" cy="6.4" r="1.6"></circle>
+      </svg>
+    </button>
+    <button id="btn-turntable" type="button" aria-pressed="true" title="Turntable">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+        <path d="M19 12a7 7 0 1 1-2.6-5.45"></path>
+        <path d="M16.1 3.1v3.7h-3.7"></path>
+      </svg>
+    </button>
+    <button id="btn-clay" type="button" aria-pressed="false" title="Hard-edge clay">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+        <path d="M12 3.2 20 7.6v8.8L12 20.8 4 16.4V7.6z"></path>
+        <path d="M4 7.6 12 12l8-4.4M12 12v8.8"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div id="anim-tag" class="tag"></div>
+  <div class="hint">drag to orbit · wheel to zoom</div>
+
+<script>__BUNDLE__</script>
+<script>const B64="__B64__";</script>
+<script>
+const {Scene,Color,PerspectiveCamera,WebGLRenderer,SRGBColorSpace,PCFSoftShadowMap,
+ HemisphereLight,DirectionalLight,PlaneGeometry,ShadowMaterial,MeshStandardMaterial,
+ LineBasicMaterial,LineSegments,WireframeGeometry,Mesh,AnimationMixer,Box3,Sphere,
+ Vector3,Clock,DoubleSide}=THREE;
+
+const host=document.getElementById('stage');
+const scene=new Scene();                       // transparent — the CSS room shows through
+const camera=new PerspectiveCamera(45,1,0.01,500);
+camera.position.set(3,2.2,4);
+const renderer=new WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.outputColorSpace=SRGBColorSpace;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=PCFSoftShadowMap;
+host.appendChild(renderer.domElement);
+
+// Neutral studio: sky/ground wash, a shadow-casting key, a dim warm fill from
+// behind so the silhouette never goes black.
+scene.add(new HemisphereLight(0xffffff,0xd8d2c4,1.0));
+const key=new DirectionalLight(0xffffff,2.2);
+key.position.set(4,7,5); key.castShadow=true;
+key.shadow.mapSize.set(2048,2048); key.shadow.bias=-0.0002;
+scene.add(key);
+const fill=new DirectionalLight(0xfff4e6,0.5); fill.position.set(-5,3,-4); scene.add(fill);
+const ground=new Mesh(new PlaneGeometry(200,200),new ShadowMaterial({opacity:0.18}));
+ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.dampingFactor=0.08;
+controls.autoRotate=true; controls.autoRotateSpeed=1.2;
+controls.addEventListener('start',()=>{ controls.autoRotate=false;
+  document.getElementById('btn-turntable').setAttribute('aria-pressed','false'); });
+
+const tag=document.getElementById('anim-tag'); let tagTimer=null;
+const showTag=t=>{ tag.textContent=t; tag.dataset.on='1';
+  clearTimeout(tagTimer); tagTimer=setTimeout(()=>{tag.dataset.on='0';},1000); };
+
+function b2a(b){const s=atob(b),u=new Uint8Array(s.length);
+  for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u.buffer}
+
+let mixer=null; const clock=new Clock();
+new GLTFLoader().parse(b2a(B64),'',g=>{
+  const model=g.scene; scene.add(model);
+  model.traverse(o=>{ o.frustumCulled=false;
+    if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; } });
+
+  // rest the model on the ground, then frame the camera to its bounds
+  const box=new Box3().setFromObject(model);
+  model.position.y-=box.min.y;
+  box.setFromObject(model);
+  const sphere=box.getBoundingSphere(new Sphere());
+  const dist=(sphere.radius/Math.tan((camera.fov*Math.PI)/360))*1.35;
+  camera.position.copy(sphere.center).add(new Vector3(0.62,0.42,0.86).normalize().multiplyScalar(dist));
+  camera.near=Math.max(dist/100,0.01); camera.far=dist*100; camera.updateProjectionMatrix();
+  controls.target.copy(sphere.center); controls.update();
+  const span=sphere.radius*2.2;
+  key.shadow.camera.left=-span; key.shadow.camera.right=span;
+  key.shadow.camera.top=span; key.shadow.camera.bottom=-span;
+  key.shadow.camera.updateProjectionMatrix();
+
+  // ── animation: cycle the clips the file actually carries, plus the bind pose
+  mixer=new AnimationMixer(model);
+  const clips=g.animations||[];
+  const order=['pose',...clips.map(c=>c.name)];
+  let ix=clips.length?1:0;
+  const play=()=>{ mixer.stopAllAction();
+    if(ix>0) mixer.clipAction(clips[ix-1]).reset().play();
+    showTag(order[ix]); };
+  document.getElementById('btn-anim').addEventListener('click',()=>{
+    ix=(ix+1)%order.length; play(); });
+  if(clips.length){ mixer.clipAction(clips[0]).play(); }
+
+  // ── hard-edge clay: flat neutral material + wireframe overlay, no colour
+  const clay=new MeshStandardMaterial({name:'clay',color:0xb9b6b0,roughness:0.85,metalness:0,
+    flatShading:true,side:DoubleSide,polygonOffset:true,polygonOffsetFactor:1.6,polygonOffsetUnits:1.6});
+  const edgeMat=new LineBasicMaterial({color:0x0a0a0c,transparent:true,opacity:0.55,depthWrite:false});
+  const original=new Map(); const edges=[];
+  model.traverse(o=>{ if(o.isMesh){ original.set(o,o.material);
+    const l=new LineSegments(new WireframeGeometry(o.geometry),edgeMat);
+    l.visible=false; o.add(l); edges.push(l); } });
+  const clayBtn=document.getElementById('btn-clay');
+  clayBtn.addEventListener('click',()=>{
+    const on=clayBtn.getAttribute('aria-pressed')!=='true';
+    clayBtn.setAttribute('aria-pressed',String(on));
+    edges.forEach(l=>{l.visible=on;});
+    original.forEach((mat,mesh)=>{ mesh.material=on?clay:mat; });
+    showTag(on?'clay on':'clay off');
+  });
+});
+
+const turntable=document.getElementById('btn-turntable');
+turntable.addEventListener('click',()=>{
+  const on=turntable.getAttribute('aria-pressed')!=='true';
+  turntable.setAttribute('aria-pressed',String(on));
+  controls.autoRotate=on;
+  showTag(on?'turntable on':'turntable off');
+});
+
+function fit(){ const w=host.clientWidth||1,h=host.clientHeight||1;
+  renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+addEventListener('resize',fit); fit();
+new ResizeObserver(fit).observe(host);
+renderer.setAnimationLoop(()=>{ if(mixer) mixer.update(clock.getDelta());
+  controls.update(); renderer.render(scene,camera); });
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "endpoint": "https://gobkit.com/api/community",
+  "channel": "harness",
+  "key": "gk_ugc_pub_8521725c13a6904bc70334af17f9e7ed76f16a9458f5d779",
+  "_key_label": "anyCreature 1.2.0 — PUBLIC BY DESIGN. This is an anonymous UGC submission key, meant to ship inside the package; it grants nothing but the right to post to the community wall, and abuse is bounded server-side by rate limiting and review. It is not a secret and finding it in the repo is not a leak. Note that rotating it does not retract it — old keys stay readable in git history, so retirement has to happen server-side."
+}

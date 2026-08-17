@@ -1,0 +1,39 @@
+# deps
+node_modules/
+package-lock.json
+package.json
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# harness working output — every run writes here, none of it belongs in git
+out/
+delivery/
+*_viewer.html
+hero.png
+hero.jpg
+gate.json
+
+# ...but the README's own images ARE committed. Without these two exceptions the
+# bare `hero.png` rule above silently swallows the front page's main picture.
+!/assets/hero.png
+!/assets/silhouettes.png
+
+# the operator's saved signature (personal data — never commit)
+.anyCreature.json
+
+# scratch / editor / OS
+*.log
+*.bak
+*.tmp
+*~
+*.swp
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# large archives: ship these as GitHub Release attachments, not repo objects.
+# Once a big blob is pushed it stays in history even after deletion.
+*.zip
