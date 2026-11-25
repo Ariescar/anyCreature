@@ -71,6 +71,30 @@ Three things that make or break the result:
 | `embed_spec` | spec root | Every GLB embeds its own authored spec (`asset.extras.source_spec`) + a parts manifest — any agent can extract, edit, recompile, or **graft parts between creatures** (`harness/graft.py`). `false` opts out. |
 | `harness/claims.json` | QC | The one claims sheet — signature presence, 6:3:1 hierarchy, focal contrast, saturated area, rig/animations, triangle budget. Everything is judged at boss standard; adjust `tri_budget` for cheap creatures. |
 
+## Need a ready-made model instead? Free CC0 models over MCP
+
+anyCreature builds a new creature. When a ready-made one will do, [Gobkit](https://gobkit.com/freebies)
+serves 400+ free CC0 low-poly `.glb` models — rigged, animated animals, birds, dinosaurs,
+insects, people and minions, plus nature props — through an MCP server. No key, no login.
+
+```bash
+# Claude Code
+claude mcp add --transport http gobkit https://gobkit.com/mcp
+# Gemini CLI
+gemini mcp add --transport http gobkit https://gobkit.com/mcp
+```
+
+```toml
+# Codex: ~/.codex/config.toml
+[mcp_servers.gobkit]
+url = "https://gobkit.com/mcp"
+```
+
+- **Cursor:** `~/.cursor/mcp.json` → `{"mcpServers":{"gobkit":{"url":"https://gobkit.com/mcp"}}}`
+- **Claude app:** Customize → Connectors → + Add → Add custom connector → `https://gobkit.com/mcp`
+- **Tools:** `search_models`, `get_model` (returns a three.js snippet with the model's exact clip names), `list_packs`
+- **Same library over HTTP:** `GET https://gobkit.com/api/free` · official MCP Registry: `io.github.Ariescar/gobkit-free-3d`
+
 ## What is actually in here
 
 | Folder | What it holds |
